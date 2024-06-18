@@ -128,7 +128,17 @@ class StateManager {
    * @param {string[]} key2
    */
   #_checkKeyEquality = (key1, key2) => {
-    return JSON.stringify(key1) === JSON.stringify(key2);
+    if (key1.length !== key2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < key1.length; i++) {
+      if (key1[i] !== key2[i]) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   /**
@@ -136,11 +146,14 @@ class StateManager {
    * @param {[string[], any]} [allCachedStates]
    */
   #_findAlreadyCachedIndex = (key, allCachedStates) => {
+    /**
+     * @type {[string[]]} _allCachedStatesKeys
+     */
     const _allCachedStatesKeys = (allCachedStates ?? this.#_getAllCachedStates()).map(
       ([cachedStatesKeys]) => cachedStatesKeys
     );
 
-    return _allCachedStatesKeys.findIndex((/** @type {any} */ cachedStateKey) =>
+    return _allCachedStatesKeys.findIndex((cachedStateKey) =>
       this.#_checkKeyEquality(cachedStateKey, key)
     );
   };
